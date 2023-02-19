@@ -4,6 +4,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @Transactional
 public class BankService {
@@ -18,8 +20,8 @@ public class BankService {
         bankRepository.deleteById(id);
     }
 
-    public Bank find(String id){
-        return bankRepository.findById(id).get();
+    public Optional<Bank> find(String id){
+        return bankRepository.findById(id);
     }
 
     public Iterable<Bank> findAll(){

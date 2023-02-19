@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 @Entity
@@ -14,7 +15,8 @@ public class Bank {
     @Id
     @Column(length = 5)
     private String id;
-    @Nonnull
-    @Column(length = 200)
+
+    @NotEmpty(message = "Name is required")
+    @Column(length = 200, nullable = false, unique = true)
     private String name;
 }
