@@ -10,8 +10,5 @@ public class AccountDTO {
     private String bank_id;
     private String name;
     private BigDecimal balance;
-    private String email;
-    private String password;
-    private String access;
 
 }

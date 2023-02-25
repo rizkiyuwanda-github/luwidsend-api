@@ -1,12 +1,12 @@
 package id.my.rizkiyuwanda.luwidsendapi.bank;
 
-import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
+
 
 @Entity
 @Table(name = "bank")

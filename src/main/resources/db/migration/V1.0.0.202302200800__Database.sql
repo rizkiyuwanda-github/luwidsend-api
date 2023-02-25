@@ -1,4 +1,13 @@
 
+CREATE TABLE public.user_app (
+                id VARCHAR(100) NOT NULL,
+                password VARCHAR(100) NOT NULL,
+                role VARCHAR(50) NOT NULL,
+                account_id VARCHAR(50),
+                CONSTRAINT user_app_pk PRIMARY KEY (id)
+);
+
+
 CREATE TABLE public.bank (
                 id VARCHAR(5) NOT NULL,
                 name VARCHAR(200) NOT NULL,
@@ -11,13 +20,9 @@ CREATE TABLE public.account (
                 bank_id VARCHAR(5) NOT NULL,
                 name VARCHAR(100) NOT NULL,
                 balance NUMERIC(19,2) NOT NULL,
-                email VARCHAR(100) NOT NULL,
-                password VARCHAR(100) NOT NULL,
-                access VARCHAR(100) NOT NULL,
                 CONSTRAINT account_pk PRIMARY KEY (id)
 );
 COMMENT ON COLUMN public.account.id IS 'bank id + account number';
-COMMENT ON COLUMN public.account.access IS 'CUSTOMER';
 
 
 CREATE TABLE public.transaction (

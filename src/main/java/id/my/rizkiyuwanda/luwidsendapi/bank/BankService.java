@@ -16,11 +16,11 @@ public class BankService {
         return bankRepository.save(bank);
     }
 
-    public void remove(String id){
+    public void deleteById(String id){
         bankRepository.deleteById(id);
     }
 
-    public Optional<Bank> find(String id){
+    public Optional<Bank> findById(String id){
         return bankRepository.findById(id);
     }
 

@@ -1,18 +1,19 @@
 package id.my.rizkiyuwanda.luwidsendapi.account;
 
-import id.my.rizkiyuwanda.luwidsendapi.ResponseDTO;
+import id.my.rizkiyuwanda.luwidsendapi.utility.ResponseDTO;
 import id.my.rizkiyuwanda.luwidsendapi.bank.Bank;
+import id.my.rizkiyuwanda.luwidsendapi.utility.StringUtility;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.Errors;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/account")
@@ -21,27 +22,55 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
-    @PostMapping("/register")
-    public ResponseEntity<ResponseDTO<Account>> register(@RequestBody AccountDTO accountDTO){
-        ResponseDTO<Account>response = new ResponseDTO<>();
+    @PostMapping("/save")
+    public ResponseEntity<ResponseDTO<Account>> save(@Valid @RequestBody AccountDTO accountDTO, Errors errors){
+        List<String> messages = new ArrayList<>();
+        if (errors.hasErrors()) {
+            for (ObjectError objectError : errors.getAllErrors()) {
+                messages.add(objectError.getDefaultMessage());
+            }
+            ResponseDTO<Account> responseDTO = new ResponseDTO<>(false, messages, null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
+        }
 
         Account account = new Account();
         account.setId(accountDTO.getId());
         Bank bank= new Bank();
         bank.setId(accountDTO.getBank_id());
-        account.setBank(bank);account.setName(accountDTO.getName());
+        account.setBank(bank);
+        account.setName(accountDTO.getName());
         account.setBalance(accountDTO.getBalance());
-        account.setEmail(accountDTO.getEmail());
-        account.setPassword(accountDTO.getPassword());
-        account.setAccess(accountDTO.getAccess());
 
-        response.setPayload(accountService.registerAccount(account));
-        response.setStatus(true);
-        List<String> messages = new ArrayList<>();
-        messages.add("Account saved");
-        response.setMessages(messages);
+        Account entity = accountService.save(account);
+        if(entity == null){
+            messages.add(StringUtility.FAILED);
+            ResponseDTO<Account> responseDTO = new ResponseDTO<>(false, messages, null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
+        }else{
+            messages.add(StringUtility.SUCCESS);
+            ResponseDTO<Account> responseDTO = new ResponseDTO<>(true, messages, entity);
+            return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
+        }
+    }
 
-        return ResponseEntity.ok(response);
+    @DeleteMapping("/deletebyid/{id}")
+    public void deleteById(@PathVariable("id") String id) {
+        accountService.deleteById(id);
+    }
+
+    @GetMapping("/findbyid/{id}")
+    public Optional<Account> findById(@PathVariable("id") String id) {
+        Optional<Account> account = accountService.findById(id);
+        if (account.isPresent() == false) {
+            return null;
+        } else {
+            return account;
+        }
+    }
+
+    @GetMapping("/findall")
+    public Iterable<Account> findAll() {
+        return accountService.findAll();
     }
 
 }
