@@ -23,11 +23,11 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
         http.csrf().disable()
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/userapp/register", "/bank/findall").permitAll()
-                        .requestMatchers("/account/findall").hasRole("Admin")
+                        .requestMatchers("/userapp/register").permitAll()
+                        .requestMatchers("/account/**").hasRole(StringUtility.ROLE_USER)
+                        .requestMatchers("/bank/**").hasRole(StringUtility.ROLE_ADMIN)
                         .anyRequest().authenticated()
                 ).httpBasic();
         return http.build();
@@ -36,6 +36,7 @@ public class WebSecurityConfig {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(daoAuthenticationProvider());
     }
+
     public DaoAuthenticationProvider daoAuthenticationProvider(){
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setPasswordEncoder(bCryptPasswordEncoder);
