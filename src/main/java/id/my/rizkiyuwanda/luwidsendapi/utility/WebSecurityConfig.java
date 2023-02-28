@@ -25,9 +25,9 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/userapp/register").permitAll()
-                        .requestMatchers("/account/**").hasRole(StringUtility.ROLE_USER)
-                        .requestMatchers("/bank/**").hasRole(StringUtility.ROLE_ADMIN)
+                        .requestMatchers("/userapp/create").permitAll()
+                        .requestMatchers("/bank/**", "/account/**").hasRole(StringUtility.ROLE_ADMIN)
+                        //.requestMatchers("/bank/**").hasRole(StringUtility.ROLE_ADMIN)
                         .anyRequest().authenticated()
                 ).httpBasic();
         return http.build();

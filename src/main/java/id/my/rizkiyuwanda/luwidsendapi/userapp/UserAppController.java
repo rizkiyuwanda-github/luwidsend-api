@@ -22,8 +22,8 @@ public class UserAppController {
     @Autowired
     private UserAppService userAppService;
 
-    @PostMapping("/register")
-    public ResponseEntity<ResponseDTO<UserApp>> register(@Valid @RequestBody UserApp userApp, Errors errors){
+    @PostMapping("/create")
+    public ResponseEntity<ResponseDTO<UserApp>> create(@Valid @RequestBody UserApp userApp, Errors errors){
         List<String> messages = new ArrayList<>();
         if (errors.hasErrors()) {
             for (ObjectError objectError : errors.getAllErrors()) {
@@ -33,7 +33,14 @@ public class UserAppController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
         }
 
-        UserApp entity = userAppService.register(userApp);
+        boolean userAppExist = userAppService.findById(userApp.getId()).isPresent();
+        if(userAppExist == true){
+            messages.add("User with ID "+userApp.getId()+" already exist");
+            ResponseDTO<UserApp> responseDTO = new ResponseDTO<>(false, messages, null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
+        }
+
+        UserApp entity = userAppService.create(userApp);
         if(entity == null){
             messages.add(StringUtility.FAILED);
             ResponseDTO<UserApp> responseDTO = new ResponseDTO<>(false, messages, null);

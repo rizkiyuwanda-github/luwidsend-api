@@ -1,6 +1,6 @@
 package id.my.rizkiyuwanda.luwidsendapi.userapp;
 
-import id.my.rizkiyuwanda.luwidsendapi.account.Account;
+import id.my.rizkiyuwanda.luwidsendapi.bank.Bank;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -32,14 +33,13 @@ public class UserAppService implements UserDetailsService {
         );
     }
 
-    public UserApp register(UserApp userApp){
-        boolean userAppExist = userAppRepository.findById(userApp.getId()).isPresent();
-        if(userAppExist == true){
-            throw new RuntimeException(String.format("User with ID '%s' already exist", userApp.getId()));
-        }
-
+    public UserApp create(UserApp userApp){
         String encodedPassword = bCryptPasswordEncoder.encode(userApp.getPassword());
         userApp.setPassword(encodedPassword);
         return userAppRepository.save(userApp);
+    }
+
+    public Optional<UserApp> findById(String id) {
+        return userAppRepository.findById(id);
     }
 }

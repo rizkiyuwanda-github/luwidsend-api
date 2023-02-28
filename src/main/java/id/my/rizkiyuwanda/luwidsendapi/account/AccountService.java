@@ -25,6 +25,10 @@ public class AccountService {
         return accountRepository.findById(id);
     }
 
+    public Optional<Account> findByIdAndBankId(String id, String bankId){
+        return accountRepository.findByIdAndBankId(id, bankId);
+    }
+
     public Iterable<Account> findAll(){
         return accountRepository.findAll();
     }

@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 
@@ -12,11 +14,14 @@ import lombok.Data;
 @Table(name = "bank")
 @Data
 public class Bank {
+    @Size(max = 5)
+    @NotNull
     @Id
     @Column(length = 5)
     private String id;
 
-    @NotEmpty(message = "Name is required")
+    @NotNull
+    @Size(max = 200)
     @Column(length = 200, nullable = false, unique = true)
     private String name;
 }

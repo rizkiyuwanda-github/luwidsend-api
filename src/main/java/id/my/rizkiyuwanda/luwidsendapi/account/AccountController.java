@@ -36,7 +36,7 @@ public class AccountController {
         Account account = new Account();
         account.setId(accountDTO.getId());
         Bank bank= new Bank();
-        bank.setId(accountDTO.getBank_id());
+        bank.setId(accountDTO.getBankId());
         account.setBank(bank);
         account.setName(accountDTO.getName());
         account.setBalance(accountDTO.getBalance());
@@ -61,6 +61,16 @@ public class AccountController {
     @GetMapping("/findbyid/{id}")
     public Optional<Account> findById(@PathVariable("id") String id) {
         Optional<Account> account = accountService.findById(id);
+        if (account.isPresent() == false) {
+            return null;
+        } else {
+            return account;
+        }
+    }
+
+    @GetMapping("/findbyidandbankid/{id}/{bankid}")
+    public Optional<Account> findById(@PathVariable("id") String id, @PathVariable("bankid") String bankId) {
+        Optional<Account> account = accountService.findByIdAndBankId(id, bankId);
         if (account.isPresent() == false) {
             return null;
         } else {

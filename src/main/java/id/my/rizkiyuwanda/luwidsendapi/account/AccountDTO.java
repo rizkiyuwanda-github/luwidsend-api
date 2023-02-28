@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 @Data
 public class AccountDTO {
     private String id;
-    private String bank_id;
+    private String bankId;
     private String name;
     private BigDecimal balance;
 

@@ -1,9 +1,11 @@
 package id.my.rizkiyuwanda.luwidsendapi.utility;
 
 public class StringUtility {
-    public static final String SUCCESS = "Success";
-    public static final String FAILED = "Failed";
+    public static final String SUCCESS = "SUCCESS";
+    public static final String FAILED = "FAILED";
 
-    public static final String ROLE_USER = "User";
-    public static final String ROLE_ADMIN = "Admin";
+    public static final String ROLE_USER = "USER";
+    public static final String ROLE_ADMIN = "ADMIN";
+
+
 }
