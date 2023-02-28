@@ -27,7 +27,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/userapp/create").permitAll()
                         .requestMatchers("/bank/**", "/account/**").hasRole(StringUtility.ROLE_ADMIN)
-                        //.requestMatchers("/bank/**").hasRole(StringUtility.ROLE_ADMIN)
+                        .requestMatchers("/transaction/**").hasRole(StringUtility.ROLE_USER)
                         .anyRequest().authenticated()
                 ).httpBasic();
         return http.build();

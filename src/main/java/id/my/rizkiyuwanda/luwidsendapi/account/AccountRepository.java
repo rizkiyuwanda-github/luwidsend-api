@@ -7,7 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.Optional;
 
 public interface AccountRepository extends CrudRepository<Account, String> {
-    //Tidak terpakai karena spring sudah menyediakan  query ini
+    //Tidak terpakai karena spring sudah menyediakan  query ini, query dibawah menggunakan JQl(JPA Query Language)
     //@Query("SELECT a FROM account a WHERE a.id = :id AND a.bank.id = :bankId")
     public Optional<Account> findByIdAndBankId(String id,  String bankId);
 }

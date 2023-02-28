@@ -2,7 +2,6 @@ package id.my.rizkiyuwanda.luwidsendapi.transaction;
 
 import id.my.rizkiyuwanda.luwidsendapi.account.Account;
 import id.my.rizkiyuwanda.luwidsendapi.account.AccountRepository;
-import id.my.rizkiyuwanda.luwidsendapi.utility.StringUtility;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,46 +19,37 @@ public class TransactionService {
     @Autowired
     private AccountRepository accountRepository;
 
-    public String transfer(String senderAccountId, String senderBankId,
-                           String receiverAccountId, String receiverBankId,
-                           BigDecimal amount, String note){
-
-        Optional<Account> senderAccount = accountRepository.findByIdAndBankId(senderAccountId, senderBankId);
-        if(senderAccount.isPresent() == false){
-            return "Account with ID "+senderAccountId+" not found";
-        }
-        if(senderAccount.get().getBalance().compareTo(amount) == -1){
-            return "Insufficient balance";
-        }
-        Optional<Account> receiverAccount = accountRepository.findByIdAndBankId(receiverAccountId, receiverBankId);
-        if(receiverAccount.isPresent() == false){
-            return "Account with ID "+receiverAccountId+" not found";
-        }
-
+    public Transaction transfer(Account senderAccount, Account receiverAccount, BigDecimal amount, String note){
         LocalDateTime ldt = LocalDateTime.now();
+
+        //Account Balance out
+        senderAccount.setBalance(senderAccount.getBalance().subtract(amount));
+        accountRepository.save(senderAccount);
+
+        //Account Balance in
+        receiverAccount.setBalance(receiverAccount.getBalance().add(amount));
+        accountRepository.save(receiverAccount);
 
         //Transaction
         Transaction transaction = new Transaction();
         transaction.setId("T"+ldt.getYear()+ldt.getMonthValue()+ldt.getDayOfMonth()+ldt.getHour()+ldt.getMinute()+ldt.getSecond()+ldt.getNano());
-        transaction.setSenderAccountId(senderAccount.get().getId());
-        transaction.setSenderBankId(senderAccount.get().getBank().getId());
-        transaction.setSenderName(senderAccount.get().getName());
-        transaction.setReceiverAccountId(receiverAccount.get().getId());
-        transaction.setReceiverBankId(receiverAccount.get().getBank().getId());
-        transaction.setReceiverName(receiverAccount.get().getName());
+        transaction.setSenderAccountId(senderAccount.getId());
+        transaction.setSenderBankId(senderAccount.getBank().getId());
+        transaction.setSenderName(senderAccount.getName());
+        transaction.setReceiverAccountId(receiverAccount.getId());
+        transaction.setReceiverBankId(receiverAccount.getBank().getId());
+        transaction.setReceiverName(receiverAccount.getName());
         transaction.setTime(ldt);
         transaction.setAmount(amount);
         transaction.setNote(note);
-        transactionRepository.save(transaction);
+        return transactionRepository.save(transaction);
+    }
 
-        //Account Balance out
-        senderAccount.get().setBalance(senderAccount.get().getBalance().subtract(amount));
-        accountRepository.save(senderAccount.get());
+    public Iterable<Transaction> findBySender(String senderAccountId, String senderBankId){
+        return transactionRepository.findBySenderAccountIdAndSenderBankId(senderAccountId, senderBankId);
+    }
 
-        //Account Balance in
-        receiverAccount.get().setBalance(receiverAccount.get().getBalance().add(amount));
-        accountRepository.save(receiverAccount.get());
-
-        return StringUtility.SUCCESS;
+    public Iterable<Transaction> findByReceiver(String receiverAccountId, String receiverBankId){
+        return transactionRepository.findByReceiverAccountIdAndReceiverBankId(receiverAccountId, receiverBankId);
     }
 }

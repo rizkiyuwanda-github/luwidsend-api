@@ -42,4 +42,7 @@ public class UserAppService implements UserDetailsService {
     public Optional<UserApp> findById(String id) {
         return userAppRepository.findById(id);
     }
+    public Iterable<UserApp> findAll() {
+        return userAppRepository.findAll();
+    }
 }
