@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -12,6 +13,8 @@ public class AccountService {
 
     @Autowired
     private AccountRepository accountRepository;
+    @Autowired
+    private AccountRepositoryJDBCTemplate accountRepositoryJDBCTemplate;
 
     public Account save(Account account){
         return accountRepository.save(account);
@@ -29,8 +32,13 @@ public class AccountService {
         return accountRepository.findByIdAndBankId(id, bankId);
     }
 
-    public Iterable<Account> findAll(){
-        return accountRepository.findAll();
+
+    public List<Account> findAllByBankId(String bankId){
+        return accountRepositoryJDBCTemplate.findAllByBankId(bankId);
+    }
+
+    public List<Account> findAll(){
+        return accountRepositoryJDBCTemplate.findAll();
     }
 
 

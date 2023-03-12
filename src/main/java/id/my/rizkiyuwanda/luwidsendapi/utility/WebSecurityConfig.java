@@ -26,7 +26,7 @@ public class WebSecurityConfig {
         http.csrf().disable()
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/userapp/create").permitAll()
-                        .requestMatchers("/bank/**", "/account/**").hasRole(StringUtility.ROLE_ADMIN)
+                        .requestMatchers("/bank/**", "/account/**, /transaction/**").hasRole(StringUtility.ROLE_ADMIN)
                         .requestMatchers("/transaction/**").hasRole(StringUtility.ROLE_USER)
                         .anyRequest().authenticated()
                 ).httpBasic();

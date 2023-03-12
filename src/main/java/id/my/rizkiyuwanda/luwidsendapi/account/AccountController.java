@@ -78,6 +78,11 @@ public class AccountController {
         }
     }
 
+    @GetMapping("/findallbybankId/{bankid}")
+    public Iterable<Account> findAllByBankId(@PathVariable("bankid") String bankId) {
+        return accountService.findAllByBankId(bankId);
+    }
+
     @GetMapping("/findall")
     public Iterable<Account> findAll() {
         return accountService.findAll();
