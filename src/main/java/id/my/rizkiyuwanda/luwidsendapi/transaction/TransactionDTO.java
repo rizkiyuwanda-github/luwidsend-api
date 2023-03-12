@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class TransactionDTO {
+    private String id;
     private String senderAccountId;
     private String senderBankId;
     private String receiverAccountId;

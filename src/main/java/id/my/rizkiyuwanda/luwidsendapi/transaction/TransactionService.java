@@ -2,6 +2,7 @@ package id.my.rizkiyuwanda.luwidsendapi.transaction;
 
 import id.my.rizkiyuwanda.luwidsendapi.account.Account;
 import id.my.rizkiyuwanda.luwidsendapi.account.AccountRepository;
+import id.my.rizkiyuwanda.luwidsendapi.bank.Bank;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,9 +20,11 @@ public class TransactionService {
     @Autowired
     private AccountRepository accountRepository;
 
-    public Transaction transfer(Account senderAccount, Account receiverAccount, BigDecimal amount, String note){
-        LocalDateTime ldt = LocalDateTime.now();
+    public LocalDateTime getLocalDateTime(){
+        return LocalDateTime.now();
+    }
 
+    public Transaction transfer(String id, Account senderAccount, Account receiverAccount, BigDecimal amount, String note){
         //Account Balance out
         senderAccount.setBalance(senderAccount.getBalance().subtract(amount));
         accountRepository.save(senderAccount);
@@ -32,17 +35,25 @@ public class TransactionService {
 
         //Transaction
         Transaction transaction = new Transaction();
-        transaction.setId("T"+ldt.getYear()+ldt.getMonthValue()+ldt.getDayOfMonth()+ldt.getHour()+ldt.getMinute()+ldt.getSecond()+ldt.getNano());
-        transaction.setSenderAccountId(senderAccount.getId());
+        transaction.setId(id);
         transaction.setSenderBankId(senderAccount.getBank().getId());
-        transaction.setSenderName(senderAccount.getName());
-        transaction.setReceiverAccountId(receiverAccount.getId());
+        transaction.setSenderBankName(senderAccount.getBank().getName());
+        transaction.setSenderAccountId(senderAccount.getId());
+        transaction.setSenderAccountName(senderAccount.getName());
         transaction.setReceiverBankId(receiverAccount.getBank().getId());
-        transaction.setReceiverName(receiverAccount.getName());
-        transaction.setTime(ldt);
+        transaction.setReceiverBankName(receiverAccount.getBank().getName());
+        transaction.setReceiverAccountId(receiverAccount.getId());
+        transaction.setReceiverAccountName(receiverAccount.getName());
+        transaction.setTime(LocalDateTime.now());
         transaction.setAmount(amount);
         transaction.setNote(note);
         return transactionRepository.save(transaction);
+    }
+
+
+
+    public Optional<Transaction> findByIdAndReceiverAccountIdAndAmount(String id, String receiverAccountId, BigDecimal amount) {
+        return transactionRepository.findByIdAndReceiverAccountIdAndAmount(id, receiverAccountId, amount);
     }
 
     public Iterable<Transaction> findBySender(String senderAccountId, String senderBankId){

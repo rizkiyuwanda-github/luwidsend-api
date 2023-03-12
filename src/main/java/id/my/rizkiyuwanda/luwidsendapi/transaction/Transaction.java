@@ -19,28 +19,36 @@ public class Transaction {
     private String id;
 
     @NotNull
-    @Column(name = "sender_account_id", length = 50)
-    private String senderAccountId;
-
-    @NotNull
     @Column(name = "sender_bank_id", length = 5)
     private String senderBankId;
 
     @NotNull
-    @Column(name = "sender_name", length = 100)
-    private String senderName;
+    @Column(name = "sender_bank_name", length = 100)
+    private String senderBankName;
 
     @NotNull
-    @Column(name = "receiver_account_id", length = 50)
-    private String receiverAccountId;
+    @Column(name = "sender_account_id", length = 50)
+    private String senderAccountId;
+
+    @NotNull
+    @Column(name = "sender_account_name", length = 100)
+    private String senderAccountName;
 
     @NotNull
     @Column(name = "receiver_bank_id", length = 5)
     private String receiverBankId;
 
     @NotNull
-    @Column(name = "receiver_name", length = 100)
-    private String receiverName;
+    @Column(name = "receiver_bank_name", length = 100)
+    private String receiverBankName;
+
+    @NotNull
+    @Column(name = "receiver_account_id", length = 50)
+    private String receiverAccountId;
+
+    @NotNull
+    @Column(name = "receiver_account_name", length = 100)
+    private String receiverAccountName;
 
     @NotNull
     @Column(columnDefinition = "TIMESTAMP")

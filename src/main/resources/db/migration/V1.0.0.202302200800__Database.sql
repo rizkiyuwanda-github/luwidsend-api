@@ -10,12 +10,14 @@ CREATE TABLE public.user_app (
 
 CREATE TABLE public.transaction (
                 id VARCHAR(50) NOT NULL,
-                sender_account_id VARCHAR(50) NOT NULL,
                 sender_bank_id VARCHAR(5) NOT NULL,
-                sender_name VARCHAR(100) NOT NULL,
-                receiver_account_id VARCHAR(50) NOT NULL,
+                sender_bank_name VARCHAR(100) NOT NULL,
+                sender_account_id VARCHAR(50) NOT NULL,
+                sender_account_name VARCHAR(100) NOT NULL,
                 receiver_bank_id VARCHAR(5) NOT NULL,
-                receiver_name VARCHAR(100) NOT NULL,
+                receiver_bank_name VARCHAR(100) NOT NULL,
+                receiver_account_id VARCHAR(50) NOT NULL,
+                receiver_account_name VARCHAR(100) NOT NULL,
                 time TIMESTAMP NOT NULL,
                 amount NUMERIC(19,2) NOT NULL,
                 note TEXT,
@@ -25,7 +27,7 @@ CREATE TABLE public.transaction (
 
 CREATE TABLE public.bank (
                 id VARCHAR(5) NOT NULL,
-                name VARCHAR(200) NOT NULL,
+                name VARCHAR(100) NOT NULL,
                 CONSTRAINT bank_pk PRIMARY KEY (id)
 );
 

@@ -12,6 +12,8 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,8 +26,13 @@ public class TransactionController {
     @Autowired
     private AccountService accountService;
 
+    @GetMapping("/gettime")
+    public LocalDateTime getLocalDateTime() {
+        return transactionService.getLocalDateTime();
+    }
+
     @PostMapping("/transfer")
-    public ResponseEntity<ResponseDTO<Transaction>> save(@Valid @RequestBody TransactionDTO transactionDTO, Errors errors) {
+    public ResponseEntity<ResponseDTO<Transaction>> transfer(@Valid @RequestBody TransactionDTO transactionDTO, Errors errors) {
 
         List<String> messages = new ArrayList<>();
         if (errors.hasErrors()) {
@@ -54,7 +61,7 @@ public class TransactionController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
         }
 
-        Transaction entity = transactionService.transfer(senderAccount.get(), receiverAccount.get(), transactionDTO.getAmount(), transactionDTO.getNote());
+        Transaction entity = transactionService.transfer(transactionDTO.getId(), senderAccount.get(), receiverAccount.get(), transactionDTO.getAmount(), transactionDTO.getNote());
         if (entity == null) {
             messages.add(StringUtility.FAILED);
             ResponseDTO<Transaction> responseDTO = new ResponseDTO<>(false, messages, null);
@@ -66,6 +73,7 @@ public class TransactionController {
         }
     }
 
+
     @GetMapping("/findbysender/{senderAccountId}/{senderBankId}")
     public Iterable<Transaction> findBySender(@PathVariable("senderAccountId") String senderAccountId, @PathVariable("senderBankId") String senderBankId) {
         return transactionService.findBySender(senderAccountId, senderBankId);
@@ -74,5 +82,13 @@ public class TransactionController {
     @GetMapping("/findbyreceiver/{receiverAccountId}/{receiverBankId}")
     public Iterable<Transaction> findByReceiver(@PathVariable("receiverAccountId") String receiverAccountId, @PathVariable("receiverBankId") String receiverBankId) {
         return transactionService.findByReceiver(receiverAccountId, receiverBankId);
+    }
+
+    @GetMapping("/findByIdAndReceiverAccountIdAndAmount/{id}/{receiverAccountId}/{amount}")
+    public Optional<Transaction> findByIdAndReceiverAccountIdAndAmount(
+            @PathVariable("id") String id,
+            @PathVariable("receiverAccountId") String receiverAccountId,
+            @PathVariable("amount") BigDecimal amount) {
+        return transactionService.findByIdAndReceiverAccountIdAndAmount(id, receiverAccountId, amount);
     }
 }
