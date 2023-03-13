@@ -27,8 +27,8 @@ public class TransactionController {
     private AccountService accountService;
 
 
-    @PostMapping("/transfer")
-    public ResponseEntity<ResponseDTO<Transaction>> transfer(@Valid @RequestBody TransactionDTO transactionDTO, Errors errors) {
+    @PostMapping("/transfer2")
+    public ResponseEntity<ResponseDTO<Transaction>> transfer2(@Valid @RequestBody TransactionDTO transactionDTO, Errors errors) {
 
         List<String> messages = new ArrayList<>();
         if (errors.hasErrors()) {
@@ -67,6 +67,37 @@ public class TransactionController {
             ResponseDTO<Transaction> responseDTO = new ResponseDTO<>(true, messages, entity);
             return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
         }
+    }
+
+    @PostMapping("/transfer")
+    public String transfer(@Valid @RequestBody TransactionDTO transactionDTO, Errors errors) {
+
+        String message = "ERROR";
+        if (errors.hasErrors()) {
+            for (ObjectError objectError : errors.getAllErrors()) {
+                message = message +", "+objectError.getDefaultMessage();
+            }
+        }
+
+        Optional<Account> senderAccount = accountService.findByIdAndBankId(transactionDTO.getSenderAccountId(), transactionDTO.getSenderBankId());
+        if(senderAccount.isPresent() == false){
+            message = message +", "+"Sender account with ID "+transactionDTO.getSenderAccountId()+" not found";
+        }
+        Optional<Account> receiverAccount = accountService.findByIdAndBankId(transactionDTO.getReceiverAccountId(), transactionDTO.getReceiverBankId());
+        if(receiverAccount.isPresent() == false){
+            message = message +", "+"Receiver account with ID "+transactionDTO.getReceiverAccountId()+" not found";
+        }
+        if(senderAccount.get().getBalance().compareTo(transactionDTO.getAmount()) == -1){
+            message = message +", "+"Insufficient balance";
+        }
+
+        Transaction entity = transactionService.transfer(senderAccount.get(), receiverAccount.get(), transactionDTO.getAmount(), transactionDTO.getNote());
+        if (entity == null) {
+            message = message +", "+StringUtility.FAILED;
+        } else {
+            message = entity.getId();
+        }
+        return message;
     }
 
 

@@ -59,6 +59,7 @@ public class Transaction {
     @Column(nullable = false)
     private BigDecimal amount;
 
+
     private String note;
 
 }
