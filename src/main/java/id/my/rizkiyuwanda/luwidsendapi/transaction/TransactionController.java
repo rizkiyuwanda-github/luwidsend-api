@@ -26,10 +26,6 @@ public class TransactionController {
     @Autowired
     private AccountService accountService;
 
-    @GetMapping("/gettime")
-    public LocalDateTime getLocalDateTime() {
-        return transactionService.getLocalDateTime();
-    }
 
     @PostMapping("/transfer")
     public ResponseEntity<ResponseDTO<Transaction>> transfer(@Valid @RequestBody TransactionDTO transactionDTO, Errors errors) {
@@ -61,7 +57,7 @@ public class TransactionController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
         }
 
-        Transaction entity = transactionService.transfer(transactionDTO.getId(), senderAccount.get(), receiverAccount.get(), transactionDTO.getAmount(), transactionDTO.getNote());
+        Transaction entity = transactionService.transfer(senderAccount.get(), receiverAccount.get(), transactionDTO.getAmount(), transactionDTO.getNote());
         if (entity == null) {
             messages.add(StringUtility.FAILED);
             ResponseDTO<Transaction> responseDTO = new ResponseDTO<>(false, messages, null);

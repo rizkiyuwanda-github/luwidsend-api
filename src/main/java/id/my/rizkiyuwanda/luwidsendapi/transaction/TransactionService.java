@@ -20,11 +20,9 @@ public class TransactionService {
     @Autowired
     private AccountRepository accountRepository;
 
-    public LocalDateTime getLocalDateTime(){
-        return LocalDateTime.now();
-    }
+    public Transaction transfer(Account senderAccount, Account receiverAccount, BigDecimal amount, String note){
+        LocalDateTime ldt = LocalDateTime.now();
 
-    public Transaction transfer(String id, Account senderAccount, Account receiverAccount, BigDecimal amount, String note){
         //Account Balance out
         senderAccount.setBalance(senderAccount.getBalance().subtract(amount));
         accountRepository.save(senderAccount);
@@ -35,7 +33,7 @@ public class TransactionService {
 
         //Transaction
         Transaction transaction = new Transaction();
-        transaction.setId(id);
+        transaction.setId("T"+ldt.getYear()+ldt.getMonthValue()+ldt.getDayOfMonth()+ldt.getHour()+ldt.getMinute()+ldt.getSecond()+ldt.getNano());
         transaction.setSenderBankId(senderAccount.getBank().getId());
         transaction.setSenderBankName(senderAccount.getBank().getName());
         transaction.setSenderAccountId(senderAccount.getId());
